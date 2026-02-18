@@ -82,13 +82,13 @@ const CV_EDUCATION_CSV = `
  * 전시 경력을 한 줄에 하나씩 입력하세요.
  */
 const CV_EXHIBITIONS_CSV = `
-2025 단체전 <Frech Born>, 성남아트센터 갤러리 808, 경기도
-2024 개인전 <Home Sweet Home>, 갤러리빈치, 서울
-2024 단체전 <유토피아:이상향을 꿈꾸다>, 다미담예술구, 전라남도 담양군
-2023 개인전 <먼지입니다만?>, 연희동 스페이스 예술가의 시작, 서울
-2022 개인전 <Dusty>, 갤러리 라메르, 서울
-2022 단체전 <Art Festival from Paraguay> Museo Nacional de Bellas Artes de Asunción, Paraguay
-2021 단체전 <MOAF(Mullae One & Only Art Fair)>, 문래동 우체국, 서울
+2025 단체전, Frech Born, 성남아트센터 갤러리 808, 경기도
+2024 개인전, Home Sweet Home, 갤러리빈치, 서울
+2024 단체전, 유토피아:이상향을 꿈꾸다, 다미담예술구, 전라남도 담양군
+2023 개인전, 먼지입니다만?, 연희동 스페이스 예술가의 시작, 서울
+2022 개인전, Dusty, 갤러리 라메르, 서울
+2022 단체전, Art Festival from Paraguay, Museo Nacional de Bellas Artes de Asunción, Paraguay
+2021 단체전, MOAF(Mullae One & Only Art Fair), 문래동 우체국, 서울
 `;
 
 /**
@@ -98,3 +98,4 @@ const CV_EXHIBITIONS_CSV = `
 const CV_AWARDS_CSV = `
 
 `;
+
