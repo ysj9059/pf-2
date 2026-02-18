@@ -78,176 +78,113 @@ let CV_EDUCATION = [];
 let CV_EXHIBITIONS = [];
 let CV_AWARDS = [];
 
+// 데이터 준비
 function prepareData() {
-    // 1. Works CSV 파싱
-    if (typeof WORKS_CSV !== 'undefined' && WORKS_CSV.trim() !== '') {
-        const lines = WORKS_CSV.trim().split('\n');
-        lines.forEach((line, index) => {
-            const parts = line.split(/[,\t]/).map(p => p.trim());
-            if (parts.length >= 5) {
-                FINAL_WORKS.push({
-                    id: `csv-${index}`,
-                    title: parts[0],
-                    size: parts[1],
-                    material: parts[2],
-                    year: parts[3],
-                    image: parts[4].startsWith('http') ? parts[4] : `images/${parts[4]}`
-                });
-            }
+    if (typeof WORKS_CSV !== 'undefined' && WORKS_CSV.trim()) {
+        FINAL_WORKS = WORKS_CSV.trim().split('\n').map((line, index) => {
+            const [title, size, material, year, imgPath] = line.split(/[,\t]/).map(p => p.trim());
+            return {
+                id: `csv-${index}`,
+                title, size, material, year,
+                image: imgPath.startsWith('http') ? imgPath : `images/${imgPath}`
+            };
         });
     }
 
-    // 2. CV CSV 파싱
-    const parseSimpleCSV = (csv) => {
-        if (typeof csv === 'undefined' || csv.trim() === '') return [];
-        return csv.trim().split('\n').map(line => line.trim()).filter(line => line !== '');
-    };
-
-    CV_EDUCATION = parseSimpleCSV(CV_EDUCATION_CSV);
-    CV_EXHIBITIONS = parseSimpleCSV(CV_EXHIBITIONS_CSV);
-    CV_AWARDS = parseSimpleCSV(CV_AWARDS_CSV);
+    const parseCSV = (csv) => csv?.trim() ? csv.trim().split('\n').map(l => l.trim()).filter(Boolean) : [];
+    CV_EDUCATION = parseCSV(CV_EDUCATION_CSV);
+    CV_EXHIBITIONS = parseCSV(CV_EXHIBITIONS_CSV);
+    CV_AWARDS = parseCSV(CV_AWARDS_CSV);
 
     SHUFFLED_WORKS = shuffleArray(FINAL_WORKS);
 }
 
-// Side-effect: SHUFFLED_WORKS가 여기서 바로 생성되지 않고 prepareData 호출 시 생성되므로 
-// 기존 전역 변수 선언 방식 수정 (위에서 함)
-
-// Home: 랜덤 무한 피드
-let homeLoadedCount = 0;
-const HOME_LOAD_BATCH = 5;
-// const SHUFFLED_WORKS = shuffleArray(WORKS_DATA); // 제거함 (prepareData에서 처리)
-
-function initHomeFeed() {
-    const container = document.getElementById('home-feed');
-    const sentinel = document.getElementById('sentinel-home');
+// 무한 스크롤 공통 로직
+function setupInfiniteScroll(containerId, sentinelId, data, batchSize, renderFn) {
+    const container = document.getElementById(containerId);
+    const sentinel = document.getElementById(sentinelId);
+    let loadedCount = 0;
 
     const loadBatch = () => {
-        const nextBatch = SHUFFLED_WORKS.slice(homeLoadedCount, homeLoadedCount + HOME_LOAD_BATCH);
-
-        nextBatch.forEach(work => {
-            const item = document.createElement('div');
-            item.className = 'home-feed-item';
-            item.innerHTML = `<img src="${work.image}" alt="${work.title}" loading="lazy">`;
-            container.appendChild(item);
-        });
-
-        homeLoadedCount += nextBatch.length;
+        const batch = data.slice(loadedCount, loadedCount + batchSize);
+        batch.forEach(item => container.appendChild(renderFn(item)));
+        loadedCount += batch.length;
     };
 
-    const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && homeLoadedCount < SHUFFLED_WORKS.length) {
-            loadBatch();
-        }
-    }, { threshold: 0.1 });
-
-    observer.observe(sentinel);
+    new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && loadedCount < data.length) loadBatch();
+    }, { threshold: 0.1 }).observe(sentinel);
 }
 
-// Works: 무한 스크롤 로직 (기존 유지)
-let worksLoadedCount = 0;
-const WORKS_LOAD_BATCH = 12;
+// Home: 랜덤 무한 피드
+function initHomeFeed() {
+    setupInfiniteScroll('home-feed', 'sentinel-home', SHUFFLED_WORKS, 5, (work) => {
+        const div = document.createElement('div');
+        div.className = 'home-feed-item';
+        div.innerHTML = `<img src="${work.image}" alt="${work.title}" loading="lazy">`;
+        return div;
+    });
+}
 
+// Works: 무한 스크롤
 function initWorks() {
-    const grid = document.getElementById('works-grid');
-    const sentinel = document.getElementById('sentinel');
-
-    const loadMoreWorks = () => {
-        const nextBatch = FINAL_WORKS.slice(worksLoadedCount, worksLoadedCount + WORKS_LOAD_BATCH);
-
-        nextBatch.forEach(work => {
-            const item = document.createElement('div');
-            item.className = 'work-item';
-            item.innerHTML = `
-                <div class="work-thumb-wrapper">
-                    <img src="${work.image}" alt="${work.title}" loading="lazy">
-                </div>
-                <div class="work-title-small">${work.title}</div>
-            `;
-            item.addEventListener('click', () => openModal(work));
-            grid.appendChild(item);
-        });
-
-        worksLoadedCount += nextBatch.length;
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && worksLoadedCount < FINAL_WORKS.length) {
-            loadMoreWorks();
-        }
-    }, { threshold: 0.1 });
-
-    observer.observe(sentinel);
+    setupInfiniteScroll('works-grid', 'sentinel', FINAL_WORKS, 12, (work) => {
+        const div = document.createElement('div');
+        div.className = 'work-item';
+        div.innerHTML = `
+            <div class="work-thumb-wrapper">
+                <img src="${work.image}" alt="${work.title}" loading="lazy">
+            </div>
+            <div class="work-title-small">${work.title}</div>
+        `;
+        div.onclick = () => openModal(work);
+        return div;
+    });
 }
 
 // CV 렌더링
 function initCV() {
-    const container = document.getElementById('cv-content');
+    const sections = [
+        { title: 'Education', data: CV_EDUCATION },
+        { title: 'Exhibitions', data: CV_EXHIBITIONS },
+        { title: 'Awards', data: CV_AWARDS }
+    ];
 
-    let html = '';
-
-    if (CV_EDUCATION.length > 0) {
-        html += `<div class="cv-section"><h3>Education</h3><ul class="cv-list">`;
-        CV_EDUCATION.forEach(item => html += `<li>${item}</li>`);
-        html += `</ul></div>`;
-    }
-
-    if (CV_EXHIBITIONS.length > 0) {
-        html += `<div class="cv-section"><h3>Exhibitions</h3><ul class="cv-list">`;
-        CV_EXHIBITIONS.forEach(item => html += `<li>${item}</li>`);
-        html += `</ul></div>`;
-    }
-
-    if (CV_AWARDS.length > 0) {
-        html += `<div class="cv-section"><h3>Awards</h3><ul class="cv-list">`;
-        CV_AWARDS.forEach(item => html += `<li>${item}</li>`);
-        html += `</ul></div>`;
-    }
-
-    container.innerHTML = html;
+    document.getElementById('cv-content').innerHTML = sections
+        .filter(s => s.data.length > 0)
+        .map(s => `
+            <div class="cv-section">
+                <h3>${s.title}</h3>
+                <ul class="cv-list">${s.data.map(item => `<li>${item}</li>`).join('')}</ul>
+            </div>
+        `).join('');
 }
 
-// Contact 메일 전송 (mailto)
+// Contact 메일 전송
 function initContact() {
-    const emailBtn = document.getElementById('contact-email-btn');
-
-    emailBtn.addEventListener('click', (e) => {
+    document.getElementById('contact-email-btn').onclick = (e) => {
         e.preventDefault();
-        window.location.href = `mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent('[Portfolio Inquiry]')}`;
-    });
+        location.href = `mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent('[Portfolio Inquiry]')}`;
+    };
 }
 
 // Modal 로직
 function openModal(work) {
     const modal = document.getElementById('work-modal');
-    const modalImg = document.getElementById('modal-img');
-    const modalTitle = document.getElementById('modal-title');
-    const modalDetail = document.getElementById('modal-detail');
-
-    modalImg.src = work.image;
-    modalTitle.textContent = work.title;
-    modalDetail.textContent = `${work.material}, ${work.size}, ${work.year}`;
-
+    document.getElementById('modal-img').src = work.image;
+    document.getElementById('modal-title').textContent = work.title;
+    document.getElementById('modal-detail').textContent = `${work.material}, ${work.size}, ${work.year}`;
     modal.style.display = 'block';
-    document.body.style.overflow = 'hidden'; // 스크롤 방지
+    document.body.style.overflow = 'hidden';
 }
 
 function initModal() {
     const modal = document.getElementById('work-modal');
-    const closeBtn = document.querySelector('.close-modal');
-    const modalImg = document.getElementById('modal-img');
-
     const closeModal = () => {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     };
 
-    closeBtn.addEventListener('click', closeModal);
-    modalImg.addEventListener('click', closeModal); // 이미지 클릭 시 닫기 추가
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
+    document.getElementById('modal-img').onclick = closeModal;
+    window.onclick = (e) => { if (e.target === modal) closeModal(); };
 }

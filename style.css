@@ -273,15 +273,6 @@ section.active {
     color: #666;
 }
 
-.close-modal {
-    position: fixed;
-    top: 30px;
-    right: 40px;
-    font-size: 2.5rem;
-    cursor: pointer;
-    z-index: 2001;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
     header {
