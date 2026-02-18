@@ -19,7 +19,7 @@ const SITE_CONFIG = {
  * 엑셀 열 순서: 제목, 크기, 재료, 연도, 이미지파일명
  */
 const WORKS_CSV = `
-작품제목1, 100x100cm, Oil on canvas, 2023, https://picsum.photos/800/1000
+작품제목1	100x100cm	Oil on canvas	2023	https://picsum.photos/800/1000
 작품제목2, 80x60cm, Acrylic on canvas, 2023, https://picsum.photos/600
 작품제목3, 120x90cm, Mixed media, 2022, https://picsum.photos/400/200
 작품제목4, 120x90cm, Mixed media, 2022, https://picsum.photos/600/300
