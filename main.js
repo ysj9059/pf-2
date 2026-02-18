@@ -40,6 +40,16 @@ function initSite() {
 function initNavigation() {
     const navLinks = document.querySelectorAll('nav a');
     const sections = document.querySelectorAll('section');
+    const hamburger = document.getElementById('hamburger-menu');
+    const nav = document.getElementById('main-nav');
+
+    // 햄버거 토글
+    if (hamburger) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+    }
 
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
@@ -49,6 +59,12 @@ function initNavigation() {
             sections.forEach(s => s.classList.remove('active'));
             document.getElementById(target).classList.add('active');
 
+            // 모바일 메뉴 닫기
+            if (nav.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                nav.classList.remove('active');
+            }
+
             // 페이지 상단으로 이동
             window.scrollTo(0, 0);
         });
@@ -57,8 +73,21 @@ function initNavigation() {
     document.getElementById('site-logo').addEventListener('click', () => {
         sections.forEach(s => s.classList.remove('active'));
         document.getElementById('home').classList.add('active');
+
+        // 모바일 메뉴 닫기
+        if (nav.classList.contains('active')) {
+            hamburger.classList.remove('active');
+            nav.classList.remove('active');
+        }
+
         window.scrollTo(0, 0);
     });
+
+    // 저작권 연도 자동 설정
+    const yearSpan = document.getElementById('current-year');
+    if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+    }
 }
 
 // 데이터 셔플 함수

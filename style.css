@@ -273,24 +273,91 @@ section.active {
     color: #666;
 }
 
+/* 햄버거 버튼 기본 숨김 (데스크톱) */
+.hamburger {
+    display: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     header {
-        flex-direction: column;
-        padding: 20px;
+        flex-direction: row;
+        /* 로고와 햄버거 버튼 가로 정렬 유지 */
+        justify-content: space-between;
+        padding: var(--spacing);
+        /* 데스크톱과 동일한 여백 유지 */
     }
 
     .logo {
-        margin-bottom: 20px;
+        margin-bottom: 0;
+    }
+
+    /* 햄버거 버튼 스타일 */
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 22px;
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    .hamburger span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        /* 요청하신 대로 2px로 통일 */
+        background-color: var(--text-color);
+        transition: all 0.3s ease;
+    }
+
+    /* 활성화된 햄버거 애니메이션 (2px 두께에 맞춰 중앙 정렬) */
+    .hamburger.active span:nth-child(1) {
+        transform: translateY(10px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+        transform: translateY(-10px) rotate(-45deg);
+    }
+
+    /* 모바일 네비게이션 메뉴 */
+    nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        /* 초기 숨김 상태 */
+        width: 70%;
+        height: 100vh;
+        background-color: var(--bg-color);
+        padding: 100px 40px;
+        transition: right 0.4s ease;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+    }
+
+    nav.active {
+        right: 0;
     }
 
     nav ul {
-        gap: 15px;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    nav ul li a {
+        font-size: 1.2rem;
     }
 
     main {
-        margin-top: 140px;
-        padding: 0 20px 20px;
+        margin-top: 120px;
+        /* 데스크톱과 동일한 상단 여백 유지 */
+        padding: 0 20px 80px;
+        /* 저작권 영역 확보를 위해 하단 패딩 증가 */
     }
 
     .home-feed-container {
@@ -304,6 +371,29 @@ section.active {
     }
 
     .work-title-small {
+        font-size: 0.6rem;
+    }
+}
+
+
+/* 저작권 표기 스타일 */
+.copyright {
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
+    font-size: 0.7rem;
+    color: #999;
+    letter-spacing: 0.05em;
+    z-index: 100;
+    pointer-events: none;
+    /* 클릭 방해 금지 */
+}
+
+/* 모바일에서의 저작권 위치 조정 (선택 사항) */
+@media (max-width: 768px) {
+    .copyright {
+        bottom: 10px;
+        right: 15px;
         font-size: 0.6rem;
     }
 }
