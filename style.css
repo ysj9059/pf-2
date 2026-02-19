@@ -362,6 +362,11 @@ header .hamburger {
         padding: 0 20px 100px;
         /* 하단 여백 추가 확보 */
     }
+
+    .works-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
 }
 
 /* 저작권 표기 스타일 (더 견고하게 수정) */

@@ -1,28 +1,51 @@
+// 초기화 로직 수정
 document.addEventListener('DOMContentLoaded', () => {
-    // 0. 데이터 준비 (CSV 파싱 포함)
     prepareData();
-
-    // 1. 초기 데이터 설정
     initSite();
-
-    // 2. 섹션 전환 네비게이션
     initNavigation();
-
-    // 3. Home: 랜덤 무한 피드
     initHomeFeed();
-
-    // 4. Works: 무한 스크롤 및 그리드 렌더링
     initWorks();
-
-    // 5. CV: 데이터 렌더링
     initCV();
-
-    // 6. Contact: 메일 전송 로직
     initContact();
-
-    // 7. Modal: 닫기 로직
     initModal();
+
+    // 초기 라우팅 처리
+    handleRouting();
+    window.addEventListener('hashchange', handleRouting);
 });
+
+// 라우팅 처리 함수
+function handleRouting() {
+    const hash = window.location.hash.replace('#', '') || 'home';
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('nav a');
+
+    sections.forEach(s => {
+        s.classList.remove('active');
+        if (s.id === hash) {
+            s.classList.add('active');
+        }
+    });
+
+    // 네비게이션 활성화 상태 업데이트
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${hash}`) {
+            link.classList.add('active');
+        }
+    });
+
+    // 페이지 상단으로 스크롤
+    window.scrollTo(0, 0);
+
+    // 섹션 전환 시 햄버거 메뉴 닫기 (모바일 전용)
+    const hamburger = document.getElementById('hamburger-menu');
+    const nav = document.getElementById('main-nav');
+    if (nav && nav.classList.contains('active')) {
+        hamburger.classList.remove('active');
+        nav.classList.remove('active');
+    }
+}
 
 // 사이트 기본 정보 설정
 function initSite() {
@@ -36,10 +59,8 @@ function initSite() {
     if (contactEmail) contactEmail.textContent = SITE_CONFIG.email;
 }
 
-// 네비게이션 로직
+// 네비게이션 로직 (이벤트 위임 방식으로 간소화)
 function initNavigation() {
-    const navLinks = document.querySelectorAll('nav a');
-    const sections = document.querySelectorAll('section');
     const hamburger = document.getElementById('hamburger-menu');
     const nav = document.getElementById('main-nav');
 
@@ -51,36 +72,9 @@ function initNavigation() {
         });
     }
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const target = e.target.getAttribute('data-section');
-
-            sections.forEach(s => s.classList.remove('active'));
-            document.getElementById(target).classList.add('active');
-
-            // 모바일 메뉴 닫기
-            if (nav.classList.contains('active')) {
-                hamburger.classList.remove('active');
-                nav.classList.remove('active');
-            }
-
-            // 페이지 상단으로 이동
-            window.scrollTo(0, 0);
-        });
-    });
-
+    // 로고 클릭 시 홈으로 이동 (해시 변경)
     document.getElementById('site-logo').addEventListener('click', () => {
-        sections.forEach(s => s.classList.remove('active'));
-        document.getElementById('home').classList.add('active');
-
-        // 모바일 메뉴 닫기
-        if (nav.classList.contains('active')) {
-            hamburger.classList.remove('active');
-            nav.classList.remove('active');
-        }
-
-        window.scrollTo(0, 0);
+        window.location.hash = 'home';
     });
 
     // 저작권 연도 자동 설정
@@ -140,9 +134,15 @@ function setupInfiniteScroll(containerId, sentinelId, data, batchSize, renderFn)
         loadedCount += batch.length;
     };
 
+    // 초기 데이터 로드 (첫 번째 배치는 즉시 로드)
+    loadBatch();
+
     new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting && loadedCount < data.length) loadBatch();
-    }, { threshold: 0.1 }).observe(sentinel);
+    }, {
+        threshold: 0.1,
+        rootMargin: '200px' // 미리 로드하여 끊김 방지
+    }).observe(sentinel);
 }
 
 // Home: 랜덤 무한 피드
