@@ -21,25 +21,31 @@ const SITE_CONFIG = {
 const WORKS_CSV = `
 Home sweet home	116.8x91.0cm	Acrylic on Canvas	2022	dusty_Home sweet home_50F.jpg
 This movie like my LIFE	116.8x91.0cm	Acrylic on Canvas	2023	dusty_This movie like my LIFE_50F.jpg
-Simpson’s house	116.8x91.0cm	Acrylic on Canvas	2024	dusty_Simpson's house_50F.jpg
+Simpson’s house	116.8x91.0cm	Acrylic on Canvas	2024	dusty_Simpson_s house_50F.jpg
 Yarn box	91.0x91.0cm	Acrylic on Canvas	2023	dusty_Yarn box_50S.jpg
 Frosted Flakes	91.0x116.8cm	Acrylic on Canvas	2023	dusty_Frosted Flakes_50F.jpg
 Simpson amd Marge	90.9x72.7cm	Acrylic on Canvas	2024	dusty_Simpson and Marge_25F.jpg
-Simpon’s Living room	80.3x65.1cm	Acrylic on Canvas	2024	dusty_Simpson's Living room_20F.jpg
+Simpon’s Living room	80.3x65.1cm	Acrylic on Canvas	2024	dusty_Simpson_s Living room_20F.jpg
 Very Dusty	100.0x80.3cm	Acrylic on Canvas	2022	dusty_Very Dusty_40F.jpg
 The toy box	72.7x90.9cm	Acrylic on Canvas	2022	dusty_The toy box_30F.jpg
-Photo Booth	60.6x72.7cm*2	Acrylic on Canvas	2023	dusty_Photo booth_1_20F.jpg / dusty_Photo booth_2_20F.jpg
+Photo Booth	60.6x72.7cm	Acrylic on Canvas	2023	dusty_Photo booth_1_20F.jpg
+Photo Booth	60.6x72.7cm	Acrylic on Canvas	2023	dusty_Photo booth_2_20F.jpg
 Spill out	80.3x65.1cm	Acrylic on Canvas	2022	dusty_Spill out_25F.jpg
 Vans box	60.6x60.6cm	Acrylic on Canvas	2022	dusty_Vans box_20S.jpg
-Ta-da	53.0x65.1cm*3	Acrylic on Canvas	2022	dusty_Ta-da_1_15F.jpg / dusty_Ta-da_2_15F.jpg / dusty_Ta-da_3_15F.jpg
+Ta-da	53.0x65.1cm	Acrylic on Canvas	2022	dusty_Ta-da_1_15F.jpg
+Ta-da	53.0x65.1cm	Acrylic on Canvas	2022	dusty_Ta-da_2_15F.jpg
+Ta-da	53.0x65.1cm	Acrylic on Canvas	2022	dusty_Ta-da_3_15F.jpg
 Locker	65.1x53.0cm	Acrylic on Canvas	2021	dusty_Locker_15F.jpg
-Look at us!	31.8x31.8cm*2	Acrylic on Canvas	2022	dusty_Look at us_1_6S.jpg / dusty_Look at us_2_6S.jpg
+Look at us!	31.8x31.8cm	Acrylic on Canvas	2022	dusty_Look at us_1_6S.jpg
+Look at us!	31.8x31.8cm	Acrylic on Canvas	2022	dusty_Look at us_2_6S.jpg
 Welcome	31.8x31.8cm	Acrylic on Canvas	2024	dusty_Welcome_6S.jpg
 Peekaboo	31.8x31.8cm	Acrylic on Canvas	2026	dusty_Peekaboo_6S.jpg
 Come on in	24.4x24.4cm	Acrylic on Canvas	2024	dusty_Come on in_3S.jpg
 Under the chair	24.4x24.4cm	Acrylic on Canvas	2024	dusty_Under the Chair_4S.jpg
-Window	22.0x22.0cm*2	Acrylic on Canvas	2024	dusty_Window_1_3S.jpg / dusty_Window_2_3S.jpg
-Home home	10.0x10.0cm*2	Acrylic on Canvas	2024	dusty_home home_1_1S.jpg / dusty_home home_2_1S.jpg
+Window	22.0x22.0cm	Acrylic on Canvas	2024	dusty_Window_1_3S.jpg
+Window	22.0x22.0cm	Acrylic on Canvas	2024	dusty_Window_2_3S.jpg
+Home home	10.0x10.0cm	Acrylic on Canvas	2024	dusty_home home_1_1S.jpg
+Home home	10.0x10.0cm	Acrylic on Canvas	2024	dusty_home home_2_1S.jpg
 Hideaway	91.0x116.8cm	Oil pastel on Canvas	2025	BODY_001_50F.JPG
 Hideaway	91.0x116.8cm	Oil pastel on Canvas	2025	BODY_002_50F.JPG
 Body drawing 1		Oil pastel on Paper	2025	Body_drawing_001.jpg
@@ -98,4 +104,5 @@ const CV_EXHIBITIONS_CSV = `
 const CV_AWARDS_CSV = `
 
 `;
+
 
