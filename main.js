@@ -97,6 +97,7 @@ function shuffleArray(array) {
 // 전역 데이터 관리
 let FINAL_WORKS = [];
 let SHUFFLED_WORKS = [];
+let HOME_WORK = null; // 홈 화면에 표시할 대표 작품
 let CV_EDUCATION = [];
 let CV_EXHIBITIONS = [];
 let CV_AWARDS = [];
@@ -104,14 +105,31 @@ let CV_AWARDS = [];
 // 데이터 준비
 function prepareData() {
     if (typeof WORKS_CSV !== 'undefined' && WORKS_CSV.trim()) {
-        FINAL_WORKS = WORKS_CSV.trim().split('\n').map((line, index) => {
-            const [title, size, material, year, imgPath] = line.split(/[,\t]/).map(p => p.trim());
-            return {
+        FINAL_WORKS = WORKS_CSV.trim().split('\n').filter(line => line.trim()).map((line, index) => {
+            const parts = line.split(/[,\t]/).map(p => p.trim());
+            const [title, size, material, year, imgPath, isHomeRaw] = parts;
+
+            // 이미지 파일명이 여러 개인 경우 처리 ( / 로 구분)
+            const images = imgPath.includes(' / ')
+                ? imgPath.split(' / ').map(img => img.trim().startsWith('http') ? img.trim() : `images/${img.trim()}`)
+                : [imgPath.startsWith('http') ? imgPath : `images/${imgPath}`];
+
+            const work = {
                 id: `csv-${index}`,
                 title, size, material, year,
-                image: imgPath.startsWith('http') ? imgPath : `images/${imgPath}`
+                images: images,
+                image: images[0], // 첫 번째 이미지를 썸네일로 사용
+                isHome: isHomeRaw === 'Home' || isHomeRaw === '홈' || isHomeRaw === '대표'
             };
+
+            if (work.isHome) HOME_WORK = work;
+            return work;
         });
+
+        // 만약 대표 이미지로 설정된 게 없다면 첫 번째 작품을 사용
+        if (!HOME_WORK && FINAL_WORKS.length > 0) {
+            HOME_WORK = FINAL_WORKS[0];
+        }
     }
 
     const parseCSV = (csv) => csv?.trim() ? csv.trim().split('\n').map(l => l.trim()).filter(Boolean) : [];
@@ -145,14 +163,20 @@ function setupInfiniteScroll(containerId, sentinelId, data, batchSize, renderFn)
     }).observe(sentinel);
 }
 
-// Home: 랜덤 무한 피드
+// Home: 대표 이미지 하나만 표시
 function initHomeFeed() {
-    setupInfiniteScroll('home-feed', 'sentinel-home', SHUFFLED_WORKS, 5, (work) => {
+    const container = document.getElementById('home-feed');
+    const sentinel = document.getElementById('sentinel-home');
+
+    // 무한 스크롤 무력화 (센티넬 제거)
+    if (sentinel) sentinel.parentNode.removeChild(sentinel);
+
+    if (HOME_WORK) {
         const div = document.createElement('div');
         div.className = 'home-feed-item';
-        div.innerHTML = `<img src="${work.image}" alt="${work.title}" loading="lazy">`;
-        return div;
-    });
+        div.innerHTML = `<img src="${HOME_WORK.image}" alt="${HOME_WORK.title}">`;
+        container.appendChild(div);
+    }
 }
 
 // Works: 무한 스크롤
@@ -160,12 +184,18 @@ function initWorks() {
     setupInfiniteScroll('works-grid', 'sentinel', FINAL_WORKS, 12, (work) => {
         const div = document.createElement('div');
         div.className = 'work-item';
-        div.innerHTML = `
-            <div class="work-thumb-wrapper">
-                <img src="${work.image}" alt="${work.title}" loading="lazy">
-            </div>
-            <div class="work-title-small">${work.title}</div>
-        `;
+
+        const thumbWrapper = document.createElement('div');
+        thumbWrapper.className = 'work-thumb-wrapper';
+        thumbWrapper.innerHTML = `<img src="${work.image}" alt="${work.title}" loading="lazy">`;
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'work-title-small';
+        titleDiv.textContent = work.title; // textContent 사용
+
+        div.appendChild(thumbWrapper);
+        div.appendChild(titleDiv);
+
         div.onclick = () => openModal(work);
         return div;
     });
@@ -179,14 +209,64 @@ function initCV() {
         { title: 'Awards', data: CV_AWARDS }
     ];
 
-    document.getElementById('cv-content').innerHTML = sections
-        .filter(s => s.data.length > 0)
-        .map(s => `
-            <div class="cv-section">
-                <h3>${s.title}</h3>
-                <ul class="cv-list">${s.data.map(item => `<li>${item}</li>`).join('')}</ul>
-            </div>
-        `).join('');
+    const container = document.getElementById('cv-content');
+    container.innerHTML = ''; // 초기화
+
+    sections.forEach(s => {
+        if (s.data.length > 0) {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'cv-section';
+
+            const h3 = document.createElement('h3');
+            h3.textContent = s.title;
+            sectionDiv.appendChild(h3);
+
+            const ul = document.createElement('ul');
+            ul.className = 'cv-list';
+
+            s.data.forEach(item => {
+                const li = document.createElement('li');
+
+                // 줄바꿈 시 타이틀 위치에 맞추기 위해 텍스트 분리
+                let prefix = "";
+                let content = item;
+
+                if (s.title === 'Exhibitions' && item.includes(',')) {
+                    // 전시의 경우 첫 번째 쉼표를 기준으로 나눔 (연도 구분, 전시제목...)
+                    const commaIndex = item.indexOf(',');
+                    prefix = item.substring(0, commaIndex + 1); // 쉼표 포함
+                    content = item.substring(commaIndex + 1).trim();
+                } else if (item.match(/^\d{4}/)) {
+                    // 연도로 시작하는 경우 첫 공백을 기준으로 나눔
+                    const spaceIndex = item.indexOf(' ');
+                    if (spaceIndex > 0) {
+                        prefix = item.substring(0, spaceIndex);
+                        content = item.substring(spaceIndex + 1).trim();
+                    }
+                }
+
+                if (prefix) {
+                    const prefixSpan = document.createElement('span');
+                    prefixSpan.className = 'cv-item-prefix';
+                    prefixSpan.textContent = prefix;
+
+                    const contentSpan = document.createElement('span');
+                    contentSpan.className = 'cv-item-content';
+                    contentSpan.textContent = content;
+
+                    li.appendChild(prefixSpan);
+                    li.appendChild(contentSpan);
+                } else {
+                    li.textContent = item;
+                }
+
+                ul.appendChild(li);
+            });
+
+            sectionDiv.appendChild(ul);
+            container.appendChild(sectionDiv);
+        }
+    });
 }
 
 // Contact 메일 전송
@@ -200,20 +280,41 @@ function initContact() {
 // Modal 로직
 function openModal(work) {
     const modal = document.getElementById('work-modal');
-    document.getElementById('modal-img').src = work.image;
+    const container = document.getElementById('modal-images-container');
+
+    // 기존 이미지 삭제
+    container.innerHTML = '';
+
+    // 이미지들 추가
+    if (work.images && work.images.length > 0) {
+        if (work.images.length > 1) {
+            container.classList.add('multi');
+        } else {
+            container.classList.remove('multi');
+        }
+
+        work.images.forEach(imgSrc => {
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.alt = work.title;
+            img.onclick = () => closeModal(); // 이미지 클릭 시 닫기
+            container.appendChild(img);
+        });
+    }
+
     document.getElementById('modal-title').textContent = work.title;
     document.getElementById('modal-detail').textContent = `${work.material}, ${work.size}, ${work.year}`;
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
 
+function closeModal() {
+    const modal = document.getElementById('work-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
 function initModal() {
     const modal = document.getElementById('work-modal');
-    const closeModal = () => {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    };
-
-    document.getElementById('modal-img').onclick = closeModal;
     window.onclick = (e) => { if (e.target === modal) closeModal(); };
 }

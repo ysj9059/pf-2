@@ -16,16 +16,16 @@ const SITE_CONFIG = {
 
 /**
  * [1. Works - 작품 데이터]
- * 엑셀 열 순서: 제목, 크기, 재료, 연도, 이미지파일명
+ * 엑셀 열 순서: 제목, 크기, 재료, 연도, 이미지파일명, Home 여부(선택)
  */
 const WORKS_CSV = `
 Home sweet home	116.8x91.0cm	Acrylic on Canvas	2022	dusty_Home sweet home_50F.jpg
 This movie like my LIFE	116.8x91.0cm	Acrylic on Canvas	2023	dusty_This movie like my LIFE_50F.jpg
-Simpson’s house	116.8x91.0cm	Acrylic on Canvas	2024	dusty_Simpson's house_50F.jpg
+Simpson’s house	116.8x91.0cm	Acrylic on Canvas	2024	dusty_Simpson_s house_50F.jpg
 Yarn box	91.0x91.0cm	Acrylic on Canvas	2023	dusty_Yarn box_50S.jpg
 Frosted Flakes	91.0x116.8cm	Acrylic on Canvas	2023	dusty_Frosted Flakes_50F.jpg
 Simpson amd Marge	90.9x72.7cm	Acrylic on Canvas	2024	dusty_Simpson and Marge_25F.jpg
-Simpon’s Living room	80.3x65.1cm	Acrylic on Canvas	2024	dusty_Simpson's Living room_20F.jpg
+Simpon’s Living room	80.3x65.1cm	Acrylic on Canvas	2024	dusty_Simpson_s Living room_20F.jpg
 Very Dusty	100.0x80.3cm	Acrylic on Canvas	2022	dusty_Very Dusty_40F.jpg
 The toy box	72.7x90.9cm	Acrylic on Canvas	2022	dusty_The toy box_30F.jpg
 Photo Booth	60.6x72.7cm*2	Acrylic on Canvas	2023	dusty_Photo booth_1_20F.jpg / dusty_Photo booth_2_20F.jpg
@@ -35,7 +35,7 @@ Ta-da	53.0x65.1cm*3	Acrylic on Canvas	2022	dusty_Ta-da_1_15F.jpg / dusty_Ta-da_2
 Locker	65.1x53.0cm	Acrylic on Canvas	2021	dusty_Locker_15F.jpg
 Look at us!	31.8x31.8cm*2	Acrylic on Canvas	2022	dusty_Look at us_1_6S.jpg / dusty_Look at us_2_6S.jpg
 Welcome	31.8x31.8cm	Acrylic on Canvas	2024	dusty_Welcome_6S.jpg
-Peekaboo	31.8x31.8cm	Acrylic on Canvas	2026	dusty_Peekaboo_6S.jpg
+Peekaboo	31.8x31.8cm	Acrylic on Canvas	2026	dusty_Peekaboo_6S.jpg	Home
 Come on in	24.4x24.4cm	Acrylic on Canvas	2024	dusty_Come on in_3S.jpg
 Under the chair	24.4x24.4cm	Acrylic on Canvas	2024	dusty_Under the Chair_4S.jpg
 Window	22.0x22.0cm*2	Acrylic on Canvas	2024	dusty_Window_1_3S.jpg / dusty_Window_2_3S.jpg
@@ -82,13 +82,13 @@ const CV_EDUCATION_CSV = `
  * 전시 경력을 한 줄에 하나씩 입력하세요.
  */
 const CV_EXHIBITIONS_CSV = `
-2025 단체전, Frech Born, 성남아트센터 갤러리 808, 경기도
-2024 개인전, Home Sweet Home, 갤러리빈치, 서울
-2024 단체전, 유토피아:이상향을 꿈꾸다, 다미담예술구, 전라남도 담양군
-2023 개인전, 먼지입니다만?, 연희동 스페이스 예술가의 시작, 서울
-2022 개인전, Dusty, 갤러리 라메르, 서울
-2022 단체전, Art Festival from Paraguay, Museo Nacional de Bellas Artes de Asunción, Paraguay
-2021 단체전, MOAF(Mullae One & Only Art Fair), 문래동 우체국, 서울
+2025 단체전, <Frech Born>, 성남아트센터 갤러리 808, 경기도
+2024 개인전, <Home Sweet Home>, 갤러리빈치, 서울
+2024 단체전, <유토피아: 이상향을 꿈꾸다>, 다미담예술구, 전라남도 담양군
+2023 개인전, <먼지입니다만?>, 연희동 스페이스 예술가의 시작, 서울
+2022 개인전, <Dusty>, 갤러리 라메르, 서울
+2022 단체전, <Art Festival from Paraguay>, Museo Nacional de Bellas Artes de Asunción, Paraguay
+2021 단체전, <MOAF(Mullae One & Only Art Fair)>, 문래동 우체국, 서울
 `;
 
 /**

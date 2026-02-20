@@ -26,7 +26,8 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    padding: var(--spacing);
+    padding: 20px var(--spacing);
+    /* Reduced from var(--spacing) (40px) to 20px vertically */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -62,8 +63,9 @@ nav ul li a:hover {
 
 /* Main Content Area */
 main {
-    margin-top: 120px;
-    min-height: calc(100vh - 120px);
+    margin-top: 80px;
+    /* Reduced from 120px */
+    min-height: calc(100vh - 80px);
     padding: 0 var(--spacing) var(--spacing);
 }
 
@@ -176,6 +178,22 @@ section.active {
 .cv-list li {
     font-size: 0.9rem;
     margin-bottom: 8px;
+    word-break: keep-all;
+    /* 한글 띄어쓰기 단위 줄바꿈 적용 */
+    overflow-wrap: break-word;
+    display: flex;
+    align-items: flex-start;
+}
+
+.cv-item-prefix {
+    white-space: nowrap;
+    margin-right: 0.5em;
+    /* 연도/구분 뒤의 간격 */
+    flex-shrink: 0;
+}
+
+.cv-item-content {
+    flex-grow: 1;
 }
 
 /* Contact Section */
@@ -249,12 +267,33 @@ section.active {
     align-items: center;
 }
 
-.modal-content img {
-    max-width: 100%;
+.modal-images-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Default to 1 column */
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* If multiple images, use grid up to 3 columns */
+.modal-images-grid.multi {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.modal-images-grid img {
+    width: 100%;
+    height: auto;
     max-height: 80vh;
     object-fit: contain;
     cursor: pointer;
-    /* 클릭 가능하다는 표시 */
+}
+
+/* Mobile: single column for modal images even if multi */
+@media (max-width: 768px) {
+    .modal-images-grid.multi {
+        grid-template-columns: 1fr;
+    }
 }
 
 .modal-info {
@@ -283,9 +322,8 @@ header .hamburger {
     header {
         flex-direction: row;
         /* 로고와 햄버거 버튼 가로 정렬 유지 */
-        justify-content: space-between;
-        padding: var(--spacing);
-        /* 데스크톱과 동일한 여백 유지 */
+        padding: 20px var(--spacing);
+        /* 데스크톱과 동일하게 20px로 축소 */
         align-items: center;
     }
 
@@ -358,7 +396,8 @@ header .hamburger {
     }
 
     main {
-        margin-top: 120px;
+        margin-top: 80px;
+        /* Reduced from 120px */
         padding: 0 20px 100px;
         /* 하단 여백 추가 확보 */
     }
