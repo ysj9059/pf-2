@@ -76,27 +76,12 @@ function initNavigation() {
     document.getElementById('site-logo').addEventListener('click', () => {
         window.location.hash = 'home';
     });
-
-    // 저작권 연도 자동 설정
-    const yearSpan = document.getElementById('current-year');
-    if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
-    }
 }
 
-// 데이터 셔플 함수
-function shuffleArray(array) {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
-}
+
 
 // 전역 데이터 관리
 let FINAL_WORKS = [];
-let SHUFFLED_WORKS = [];
 let HOME_WORK = null; // 홈 화면에 표시할 대표 작품
 let CV_EDUCATION = [];
 let CV_EXHIBITIONS = [];
@@ -136,8 +121,6 @@ function prepareData() {
     CV_EDUCATION = parseCSV(CV_EDUCATION_CSV);
     CV_EXHIBITIONS = parseCSV(CV_EXHIBITIONS_CSV);
     CV_AWARDS = parseCSV(CV_AWARDS_CSV);
-
-    SHUFFLED_WORKS = shuffleArray(FINAL_WORKS);
 }
 
 // 무한 스크롤 공통 로직

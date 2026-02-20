@@ -276,23 +276,40 @@ section.active {
     margin-bottom: 20px;
 }
 
-/* If multiple images, use grid up to 3 columns */
+/* If multiple images, use flexbox to center them */
 .modal-images-grid.multi {
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .modal-images-grid img {
-    width: 100%;
     height: auto;
     max-height: 80vh;
     object-fit: contain;
     cursor: pointer;
 }
 
-/* Mobile: single column for modal images even if multi */
+.modal-images-grid:not(.multi) img {
+    width: 100%;
+}
+
+.modal-images-grid.multi img {
+    width: calc(33.333% - 14px);
+    /* 3컬럼 기준 (Gap 제외) */
+    flex: 0 0 auto;
+}
+
+/* Mobile: stack images vertically */
 @media (max-width: 768px) {
     .modal-images-grid.multi {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .modal-images-grid.multi img {
+        width: 100%;
     }
 }
 
