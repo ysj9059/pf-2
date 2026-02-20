@@ -10,7 +10,7 @@
 const SITE_CONFIG = {
     title: "GU | Portfolio",
     logoText: "GU", // 웹사이트 왼쪽 상단 로고 글자
-    artistName: "Jiyoo Han", // Contact 섹션 등에 표시될 작가 이름
+    artistName: "Han Jiyoo", // Contact 섹션 등에 표시될 작가 이름
     email: "oz.hanny0828@gmail.com", // 메일 받을 주소
 };
 
